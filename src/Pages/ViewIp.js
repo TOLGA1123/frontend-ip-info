@@ -1,5 +1,5 @@
-import axios from "axios";
-import React, { useEffect,useState } from "react";
+import axios from '../util/axios';
+import React, { useCallback, useEffect,useState } from "react";
 import { Link, useParams } from "react-router-dom";
 
 export default function ViewIp() {
@@ -9,18 +9,21 @@ export default function ViewIp() {
         status: "",
         location: "",
         relatedGroup: "",
+        operatingSystem: "",
       });
 
   const { id } = useParams();
 
+  const loadIP = useCallback( async () => {
+    const result = await axios.get(`/info/ip/${id}`);
+    setIpAddress(result.data);
+  }, [id]);
+  
   useEffect(() => {
     loadIP();
-  }, []);
+  }, [loadIP]);
 
-  const loadIP = async () => {
-    const result = await axios.get(`http://localhost:8080/info/ip/${id}`);
-    setIpAddress(result.data);
-  };
+  
 
   return (
     <div className="container">
@@ -51,6 +54,10 @@ export default function ViewIp() {
                 <li className="list-group-item">
                   <b>Related Group: </b>
                   {ipAddress.relatedGroup}
+                </li>
+                <li className="list-group-item">
+                  <b>Operating System: </b>
+                  {ipAddress.operatingSystem}
                 </li>
               </ul>
             </div>

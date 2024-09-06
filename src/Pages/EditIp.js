@@ -1,9 +1,11 @@
 import axios from '../util/axios';
-import React, { useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import React, { useCallback ,useEffect, useState } from "react";
+import { Link, useNavigate, useParams } from "react-router-dom";
 
-export default function AddIp() {
+export default function EditIp() {
   let navigate = useNavigate();
+
+  const { id } = useParams();
 
   const [ipAddress, setIpAddress] = useState({
     ip: "",
@@ -20,22 +22,36 @@ export default function AddIp() {
     setIpAddress({ ...ipAddress, [e.target.name]: e.target.value });
   };
 
+  const loadIpAddress = useCallback(async () => {
+    try {
+        const result = await axios.get(`/info/ip/${id}`);
+        setIpAddress(result.data);
+    } catch (error) {
+        console.error("Error loading IP address:", error);
+    }
+}, [id]);
+
+  useEffect(() => {
+    loadIpAddress();
+  }, [loadIpAddress]);
+
   const onSubmit = async (e) => {
     e.preventDefault();
-    await axios.post('/info/ip', ipAddress);
+    await axios.put(`/info/ip/${id}`, ipAddress);
     navigate("/");
   };
+
 
   return (
     <div className="container">
       <div className="row">
         <div className="col-md-6 offset-md-3 border rounded p-4 mt-2 shadow">
-          <h2 className="text-center m-4">Add New IP</h2>
+          <h2 className="text-center m-4">Edit IP</h2>
 
           <form onSubmit={(e) => onSubmit(e)}>
             <div className="mb-3">
               <label htmlFor="Name" className="form-label">
-                IP Adresi
+                IP
               </label>
               <input
                 type={"text"}
@@ -47,7 +63,7 @@ export default function AddIp() {
               />
             </div>
             <div className="mb-3">
-              <label htmlFor="hostName" className="form-label">
+              <label htmlFor="Name" className="form-label">
                 Sunucu Adı
               </label>
               <input
@@ -60,7 +76,7 @@ export default function AddIp() {
               />
             </div>
             <div className="mb-3">
-              <label htmlFor="Email" className="form-label">
+              <label htmlFor="Name" className="form-label">
                 Durumu
               </label>
               <input
@@ -73,7 +89,7 @@ export default function AddIp() {
               />
             </div>
             <div className="mb-3">
-              <label htmlFor="Location" className="form-label">
+              <label htmlFor="Name" className="form-label">
                 Konumu
               </label>
               <input
@@ -86,7 +102,7 @@ export default function AddIp() {
               />
             </div>
             <div className="mb-3">
-              <label htmlFor="relatedGroup" className="form-label">
+              <label htmlFor="Name" className="form-label">
                 İlgilenen Grup
               </label>
               <input
@@ -99,7 +115,7 @@ export default function AddIp() {
               />
             </div>
             <div className="mb-3">
-              <label htmlFor="Location" className="form-label">
+              <label htmlFor="Name" className="form-label">
                 İşletim Sistemi
               </label>
               <input
