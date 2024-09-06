@@ -12,8 +12,12 @@ instance.interceptors.request.use((config) => {
       //console.log(token);
     }
     return config;
-  }, (error) => {
+  },  error => {
+    if (error.response && error.response.status === 404) {
+        // Redirect or show a specific message for 404 errors
+        alert('IP Address not found.');
+    }
     return Promise.reject(error);
-  });
+});
 
 export default instance;

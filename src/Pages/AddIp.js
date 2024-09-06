@@ -14,6 +14,9 @@ export default function AddIp() {
     operatingSystem: "",
   });
 
+  const [error, setError] = useState(null); // State to handle error messages
+  const [success, setSuccess] = useState(null); // State to handle success messages
+
   const { ip, hostName, status, location, relatedGroup, operatingSystem } = ipAddress;
 
   const onInputChange = (e) => {
@@ -22,8 +25,19 @@ export default function AddIp() {
 
   const onSubmit = async (e) => {
     e.preventDefault();
-    await axios.post('/info/ip', ipAddress);
-    navigate("/");
+    try {
+      const response = await axios.post('/info/ip', ipAddress);
+      setSuccess("IP Address added successfully!");
+      setError(null); // Clear any previous errors
+      navigate("/");
+    } catch (error) {
+      if (error.response && error.response.status === 409) {
+        setError("IP Address already exists.");
+      } else {
+        setError("An error occurred while adding the IP address.");
+      }
+      setSuccess(null); // Clear any previous success messages
+    }
   };
 
   return (
@@ -32,83 +46,94 @@ export default function AddIp() {
         <div className="col-md-6 offset-md-3 border rounded p-4 mt-2 shadow">
           <h2 className="text-center m-4">Add New IP</h2>
 
-          <form onSubmit={(e) => onSubmit(e)}>
+          {error && (
+            <div className="alert alert-danger" role="alert">
+              {error}
+            </div>
+          )}
+          {success && (
+            <div className="alert alert-success" role="alert">
+              {success}
+            </div>
+          )}
+
+          <form onSubmit={onSubmit}>
             <div className="mb-3">
-              <label htmlFor="Name" className="form-label">
-                IP Adresi
+              <label htmlFor="ip" className="form-label">
+                IP Address
               </label>
               <input
-                type={"text"}
+                type="text"
                 className="form-control"
-                placeholder="Enter ip address"
+                placeholder="Enter IP address"
                 name="ip"
                 value={ip}
-                onChange={(e) => onInputChange(e)}
+                onChange={onInputChange}
               />
             </div>
             <div className="mb-3">
               <label htmlFor="hostName" className="form-label">
-                Sunucu Adı
+                Host Name
               </label>
               <input
-                type={"text"}
+                type="text"
                 className="form-control"
                 placeholder="Enter host name"
                 name="hostName"
                 value={hostName}
-                onChange={(e) => onInputChange(e)}
+                onChange={onInputChange}
               />
             </div>
             <div className="mb-3">
-              <label htmlFor="Email" className="form-label">
-                Durumu
+              <label htmlFor="status" className="form-label">
+                Status
               </label>
               <input
-                type={"text"}
+                type="text"
                 className="form-control"
                 placeholder="Enter status"
                 name="status"
                 value={status}
-                onChange={(e) => onInputChange(e)}
+                onChange={onInputChange}
               />
             </div>
             <div className="mb-3">
-              <label htmlFor="Location" className="form-label">
-                Konumu
+              <label htmlFor="location" className="form-label">
+                Location
               </label>
               <input
-                type={"text"}
+                type="text"
                 className="form-control"
                 placeholder="Enter location"
                 name="location"
                 value={location}
-                onChange={(e) => onInputChange(e)}
+                onChange={onInputChange}
               />
             </div>
             <div className="mb-3">
               <label htmlFor="relatedGroup" className="form-label">
-                İlgilenen Grup
+                Related Group
               </label>
               <input
-                type={"text"}
+                type="text"
                 className="form-control"
                 placeholder="Enter related group"
                 name="relatedGroup"
                 value={relatedGroup}
-                onChange={(e) => onInputChange(e)}
+                onChange={onInputChange}
               />
             </div>
             <div className="mb-3">
-              <label htmlFor="Location" className="form-label">
-                İşletim Sistemi
+              <label htmlFor="operatingSystem" className="form-label">
+                Operating System
               </label>
               <input
-                type={"text"}
+                type="text"
                 className="form-control"
                 placeholder="Enter operating system"
                 name="operatingSystem"
                 value={operatingSystem}
-                onChange={(e) => onInputChange(e)}
+                onChange={onInputChange}
               />
             </div>
             <button type="submit" className="btn btn-outline-primary">
