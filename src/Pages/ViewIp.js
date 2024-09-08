@@ -27,8 +27,7 @@ export default function ViewIp() {
             <div className="container">
                 <div className="row">
                     <div className="col-md-6 offset-md-3 border rounded p-4 mt-2 shadow">
-                        <h2 className="text-center m-4">Error</h2>
-                        <p>{error}</p>
+                        <h2 className="text-danger">{error}</h2>
                         <Link className="btn btn-primary my-2" to={"/"}>
                             Back to Home
                         </Link>

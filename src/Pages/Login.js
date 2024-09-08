@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import axios from '../util/axios';
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 import {
     MDBBtn,
     MDBContainer,
@@ -12,6 +12,7 @@ import {
     //MDBIcon,
     //MDBCheckbox
 } from 'mdb-react-ui-kit';
+import logo from '../layout/logo.png'; 
 
 function Login() {
   const [username, setUsername] = useState("");
@@ -44,6 +45,9 @@ function Login() {
         <MDBCol col='12'>
           <MDBCard className='bg-white my-5 mx-auto' style={{borderRadius: '1rem', maxWidth: '500px'}}>
             <MDBCardBody className='p-5 w-100 d-flex flex-column'>
+            <div className="text-center mb-4">
+                { <img src={logo} alt="Logo" style={{ width: '250px' }} /> }
+              </div>
               <h2 className="fw-bold mb-2 text-center">Sign in</h2>
               <p className="text-white-50 mb-3">Please enter your login and password!</p>
 
@@ -71,7 +75,11 @@ function Login() {
               </MDBBtn>
 
               <hr className="my-4" />
-
+              <div className="text-center mt-3">
+                <p className="text-center">
+                  Don't have an account? <Link to="/register" className="text-primary">Register here</Link>
+                </p>
+              </div>
 
             </MDBCardBody>
           </MDBCard>

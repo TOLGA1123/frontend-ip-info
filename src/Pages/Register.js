@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import axios from '../util/axios';
 import { useNavigate } from "react-router-dom";
+import logo from '../layout/logo.png'; 
 import {
     MDBBtn,
     MDBContainer,
@@ -35,6 +36,9 @@ function Register() {
         <MDBCol col='12'>
           <MDBCard className='bg-white my-5 mx-auto' style={{borderRadius: '1rem', maxWidth: '500px'}}>
             <MDBCardBody className='p-5 w-100 d-flex flex-column'>
+            <div className="text-center mb-4">
+                { <img src={logo} alt="Logo" style={{ width: '250px' }} /> }
+              </div>
               <h2 className="fw-bold mb-2 text-center">Register</h2>
               <p className="text-white-50 mb-3">Please create your account!</p>
 

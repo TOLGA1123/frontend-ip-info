@@ -22,10 +22,19 @@ export default function AddIp() {
   const onInputChange = (e) => {
     setIpAddress({ ...ipAddress, [e.target.name]: e.target.value });
   };
-
+  const validateForm = () => {
+    if (!ipAddress.ip) {
+      setError("IP Address is required");
+      return false;
+    }
+    // Add more validation if needed
+    setError(null);
+    return true;
+  };
   const onSubmit = async (e) => {
     e.preventDefault();
     try {
+      if (!validateForm()) return;
       const response = await axios.post('/info/ip', ipAddress);
       setSuccess("IP Address added successfully!");
       setError(null); // Clear any previous errors
