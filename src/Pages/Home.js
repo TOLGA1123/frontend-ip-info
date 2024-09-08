@@ -1,7 +1,17 @@
 import React, { useEffect, useState } from "react";
 import axios from '../util/axios';
 import { Link } from "react-router-dom";
-
+import {
+  MDBBtn,
+  MDBContainer,
+  MDBRow,
+  MDBCol,
+  MDBTable,
+  MDBTableBody,
+  MDBTableHead,
+  //MDBIcon,
+  //MDBCheckbox
+} from 'mdb-react-ui-kit';
 export default function Home() {
     const [IPs, setIPs] = useState([]);
     //const { id } = useParams();
@@ -25,53 +35,55 @@ export default function Home() {
           console.error("Error deleting IP:", error);
         }
       };
-    return (
-        <div className="container">
-        <div className="py-4">
-          <h1>IP Addresses</h1>
-          <table className="table">
-            <thead>
-              <tr>
-                <th>IP Adresi</th>
-                <th>Sunucu Adı</th>
-                <th>Durumu</th>
-                <th>Konumu</th>
-                <th>İlgilenen Grup</th>
-                <th>İşletim Sistemi</th>
-              </tr>
-            </thead>
-            <tbody>
-              {IPs.map((ip) => (
-                <tr key={ip.id}>
-                  <td>{ip.ip}</td>
-                  <td>{ip.hostName}</td>
-                  <td>{ip.status}</td>
-                  <td>{ip.location}</td>
-                  <td>{ip.relatedGroup}</td>
-                  <td>{ip.operatingSystem}</td>
-                  <td>
-                  <Link to={`/viewIp/${ip.id}`} className="btn btn-primary btn-sm me-1">
-                    View Details
-                  </Link>
-                </td>
-                <td>
-                  <Link to={`/editIp/${ip.id}`} className="btn btn-primary btn-sm me-1">
-                    Edit IP
-                  </Link>
-                </td>
-                <td>
-                  <button
-                    className="btn btn-danger btn-lg me-1"
-                    onClick={() => deleteIP(ip.id)}
-                  >
-                    Delete
-                  </button>
-                </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
-      </div>
+      return (
+        <MDBContainer fluid>
+            <MDBRow className="my-4">
+                <MDBCol md="12">
+                    <h1 className="text-center mb-4">IP Addresses</h1>
+                    <MDBTable striped bordered hover>
+                        <MDBTableHead>
+                            <tr style={{ fontSize: '1.3rem', fontFamily: 'Arial, sans-serif', fontWeight: '900' }}>
+                                <th>IP Adresi</th>
+                                <th>Sunucu İsmi</th>
+                                <th>Sunucu Durumu</th>
+                                <th>Sunucu Konumu</th>
+                                <th>İlgilenen Grup</th>
+                                <th>İşletim Sistemi</th>
+                                <th>Actions</th>
+                            </tr>
+                        </MDBTableHead>
+                        <MDBTableBody>
+                            {IPs.map((ip) => (
+                                <tr 
+                                key={ip.id}
+                                style={{ fontSize: '1.0rem', fontFamily: 'Arial, sans-serif', fontWeight: '500' }}>
+                                    <td>{ip.ip}</td>
+                                    <td>{ip.hostName}</td>
+                                    <td>{ip.status}</td>
+                                    <td>{ip.location}</td>
+                                    <td>{ip.relatedGroup}</td>
+                                    <td>{ip.operatingSystem}</td>
+                                    <td>
+                                        <Link to={`/viewIp/${ip.id}`} className="btn btn-info btn-md me-1">
+                                            View
+                                        </Link>
+                                        <Link to={`/editIp/${ip.id}`} className="btn btn-warning btn-md me-1">
+                                            Edit
+                                        </Link>
+                                        <MDBBtn 
+                                            color="danger" 
+                                            size="md"
+                                            onClick={() => deleteIP(ip.id)}
+                                        >
+                                            Delete
+                                        </MDBBtn>
+                                    </td>
+                                </tr>
+                            ))}
+                        </MDBTableBody>
+                    </MDBTable>
+                </MDBCol>
+            </MDBRow>
+        </MDBContainer>
     );
-  }
+}
