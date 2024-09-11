@@ -30,7 +30,12 @@ function Login() {
       console.log("Response data:", response.data); // Log response data
       if (response.data && response.data.token) {
           localStorage.setItem("token", response.data.token);
-          navigate("/");
+          localStorage.setItem("role", response.data.role);
+          if (response.data.role === "ADMIN") {
+            navigate("/admin");
+          } else {
+            navigate("/");
+          }
       } else {
           console.error("Token not found in response data");
       }
@@ -77,7 +82,8 @@ function Login() {
               <hr className="my-4" />
               <div className="text-center mt-3">
                 <p className="text-center">
-                  Don't have an account? <Link to="/register" className="text-primary">Register here</Link>
+                  Don't have an account?
+                  Only admin can register new account.
                 </p>
               </div>
 

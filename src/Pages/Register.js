@@ -20,13 +20,17 @@ function Register() {
   const handleRegister = async (e) => {
     e.preventDefault();
     try {
-      await axios.post("/auth/signup", {
+      await axios.post("/admin/signup", {
         username,
         password,
       });
-      navigate("/login"); // Redirect to login page after registration
+      navigate("/all-users");
     } catch (error) {
-      console.error("Error during registration:", error);
+      if (error.response && error.response.status === 409) {
+        alert("Username already exists! Please choose a different one.");
+      } else {
+        console.error("Error during registration:", error);
+      }
     }
   };
 
