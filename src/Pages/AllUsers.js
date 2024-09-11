@@ -1,10 +1,29 @@
 import React, { useState, useEffect } from "react";
 import axios from "../util/axios";
-import { MDBTable, MDBTableHead, MDBTableBody } from "mdb-react-ui-kit";
+import { MDBTable, MDBTableHead, MDBTableBody, MDBBtn } from "mdb-react-ui-kit";
 
 function AllUsers() {
   const [users, setUsers] = useState([]);
-
+  
+  useEffect(() => {
+    fetchUsers();
+  }, []);
+  const fetchUsers = async () => {
+    try {
+      const response = await axios.get('/admin/users');
+      setUsers(response.data);
+    } catch (error) {
+      console.error("Error fetching users:", error);
+    }
+  };
+  const handleDelete = async (userId) => {
+    try {
+      await axios.delete(`/admin/users/${userId}`);
+      fetchUsers();
+    } catch (error) {
+      console.error("Error deleting user:", error);
+    }
+  };
   useEffect(() => {
     const fetchUsers = async () => {
       try {
@@ -14,6 +33,7 @@ function AllUsers() {
         console.error("Error fetching users", error);
       }
     };
+    
 
     fetchUsers();
   }, []);
@@ -25,9 +45,9 @@ function AllUsers() {
         <MDBTable>
           <MDBTableHead>
             <tr>
-              <th>#</th>
-              <th>Username</th>
-              <th>Role</th>
+              <th style={{ fontWeight: 'bold', fontSize: '24px' }}>#</th>
+              <th style={{ fontWeight: 'bold', fontSize: '24px' }}>Username</th>
+              <th style={{ fontWeight: 'bold', fontSize: '24px' }}>Role</th>
             </tr>
           </MDBTableHead>
           <MDBTableBody>
@@ -36,7 +56,13 @@ function AllUsers() {
                 <td>{index + 1}</td>
                 <td>{user.username}</td>
                 <td>{user.role}</td>
+                <td>
+                        <MDBBtn color="danger" onClick={() => handleDelete(user.id)}>
+                          Delete
+                        </MDBBtn>
+                      </td>
               </tr>
+              
             ))}
           </MDBTableBody>
         </MDBTable>
