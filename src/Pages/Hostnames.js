@@ -17,31 +17,31 @@ import {
 
 const HostNames = () => {
     const [hostNames, setHostNames] = useState([]);
-    const [newHostName, setNewHostName] = useState("");
+    const [newHostName, setNewHostName] = useState('');
 
     // Fetch hostnames on component mount
     useEffect(() => {
-        const fetchHostNames = async () => {
-            try {
-                const response = await axios.get('/hostnames');
-                setHostNames(response.data);
-            } catch (error) {
-                console.error("Error fetching hostnames:", error);
-            }
-        };
-
-        fetchHostNames();
+        loadHostNames();
     }, []);
+
+    const loadHostNames = async () => {
+        try {
+            const response = await axios.get('/hostnames');
+            setHostNames(response.data);
+        } catch (error) {
+            console.error('Error loading hostnames:', error);
+        }
+    };
 
     // Add a new hostname
     const handleAddHostName = async (e) => {
         e.preventDefault();
         try {
             await axios.post('/hostnames', { name: newHostName });
-            setHostNames([...hostNames, { name: newHostName }]); // Optimistic update
-            setNewHostName(""); // Clear input field
+            loadHostNames(); // Refresh the list
+            setNewHostName(''); // Clear input field
         } catch (error) {
-            console.error("Error adding hostname:", error);
+            console.error('Error adding hostname:', error);
         }
     };
 
@@ -49,9 +49,9 @@ const HostNames = () => {
     const handleDelete = async (id) => {
         try {
             await axios.delete(`/hostnames/${id}`);
-            setHostNames(hostNames.filter(hostName => hostName.id !== id));
+            loadHostNames(); // Refresh the list
         } catch (error) {
-            console.error("Error deleting hostname:", error);
+            console.error('Error deleting hostname:', error);
         }
     };
 
