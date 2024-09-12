@@ -15,6 +15,9 @@ import AdminPanel from './Pages/AdminPanel';
 import AllUsers from './Pages/AllUsers';
 import HostNames from './Pages/Hostnames';
 import Statuses from './Pages/Statuses';
+import OperatingSystems from './Pages/OperatingSystems';
+import RelatedGroups from './Pages/RelatedGroups';
+import Locations from './Pages/Locations';
 function App() {
   //const token = localStorage.getItem('token');
   //const userRole = localStorage.getItem('role');
@@ -60,6 +63,9 @@ function App() {
             <Route path="/manage-hostnames" element={userRole === 'ADMIN' ? <HostNames /> : <Navigate to="/login" />} />
 
             <Route path="/manage-statuses" element={userRole === 'ADMIN' ? <Statuses/> : <Navigate to="/login" />} />
+            <Route path="/manage-operating-systems" element={userRole === 'ADMIN' ? <OperatingSystems/> : <Navigate to="/login" />}/>
+            <Route path="/manage-related-groups" element={userRole === 'ADMIN' ? <RelatedGroups/> : <Navigate to="/login" />}/>
+            <Route path="/manage-locations" element={userRole === 'ADMIN' ? <Locations/> : <Navigate to="/login" />}/>
           </Routes>
         </main>
       </div>

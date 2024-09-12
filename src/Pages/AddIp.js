@@ -16,12 +16,18 @@ export default function AddIp() {
 
   const [hostNames, setHostNames] = useState([]);
   const [statuses, setStatuses] = useState([]);
-  const [error, setError] = useState(null); // State to handle error messages
-  const [success, setSuccess] = useState(null); // State to handle success messages
+  const [locations, setLocations] = useState([]);
+  const [relatedGroups, setRelatedGroups] = useState([]);
+  const [operatingSystems, setOperatingSystems] = useState([]);
+  const [error, setError] = useState(null);
+  const [success, setSuccess] = useState(null);
   
   useEffect(() => {
     loadHostNames();
     loadStatuses();
+    loadLocations();
+    loadRelatedGroups();
+    loadOperatingSystems();
   }, []);
   
   const loadHostNames = async () => {
@@ -32,12 +38,40 @@ export default function AddIp() {
       console.error("Error loading hostnames:", error);
     }
   };
+
   const loadStatuses = async () => {
     try {
       const result = await axios.get('/statuses');
       setStatuses(result.data);
     } catch (error) {
       console.error("Error loading statuses:", error);
+    }
+  };
+
+  const loadLocations = async () => {
+    try {
+      const result = await axios.get('/locations');
+      setLocations(result.data);
+    } catch (error) {
+      console.error("Error loading locations:", error);
+    }
+  };
+
+  const loadRelatedGroups = async () => {
+    try {
+      const result = await axios.get('/related-groups');
+      setRelatedGroups(result.data);
+    } catch (error) {
+      console.error("Error loading related groups:", error);
+    }
+  };
+
+  const loadOperatingSystems = async () => {
+    try {
+      const result = await axios.get('/operating-systems');
+      setOperatingSystems(result.data);
+    } catch (error) {
+      console.error("Error loading operating systems:", error);
     }
   };
 
@@ -50,8 +84,21 @@ export default function AddIp() {
   const handleHostNameChange = (e) => {
     setIpAddress({ ...ipAddress, hostName: e.target.value });
   };
+
   const handleStatusChange = (e) => {
     setIpAddress({ ...ipAddress, status: e.target.value });
+  };
+
+  const handleLocationChange = (e) => {
+    setIpAddress({ ...ipAddress, location: e.target.value });
+  };
+
+  const handleRelatedGroupChange = (e) => {
+    setIpAddress({ ...ipAddress, relatedGroup: e.target.value });
+  };
+
+  const handleOperatingSystemChange = (e) => {
+    setIpAddress({ ...ipAddress, operatingSystem: e.target.value });
   };
 
   const validateForm = () => {
@@ -152,40 +199,55 @@ export default function AddIp() {
               <label htmlFor="location" className="form-label">
                 Location
               </label>
-              <input
-                type="text"
+              <select
                 className="form-control"
-                placeholder="Enter location"
                 name="location"
                 value={location}
-                onChange={onInputChange}
-              />
+                onChange={handleLocationChange}
+              >
+                <option value="">Select Location</option>
+                {locations.map((loc) => (
+                  <option key={loc.id} value={loc.name}>
+                    {loc.name}
+                  </option>
+                ))}
+              </select>
             </div>
             <div className="mb-3">
               <label htmlFor="relatedGroup" className="form-label">
                 Related Group
               </label>
-              <input
-                type="text"
+              <select
                 className="form-control"
-                placeholder="Enter related group"
                 name="relatedGroup"
                 value={relatedGroup}
-                onChange={onInputChange}
-              />
+                onChange={handleRelatedGroupChange}
+              >
+                <option value="">Select Related Group</option>
+                {relatedGroups.map((group) => (
+                  <option key={group.id} value={group.name}>
+                    {group.name}
+                  </option>
+                ))}
+              </select>
             </div>
             <div className="mb-3">
               <label htmlFor="operatingSystem" className="form-label">
                 Operating System
               </label>
-              <input
-                type="text"
+              <select
                 className="form-control"
-                placeholder="Enter operating system"
                 name="operatingSystem"
                 value={operatingSystem}
-                onChange={onInputChange}
-              />
+                onChange={handleOperatingSystemChange}
+              >
+                <option value="">Select Operating System</option>
+                {operatingSystems.map((os) => (
+                  <option key={os.id} value={os.name}>
+                    {os.name}
+                  </option>
+                ))}
+              </select>
             </div>
             <button type="submit" className="btn btn-outline-primary">
               Submit
