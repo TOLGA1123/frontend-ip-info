@@ -22,14 +22,19 @@ function App() {
   //const token = localStorage.getItem('token');
   //const userRole = localStorage.getItem('role');
   const [userRole, setUserRole] = useState(null);
+  const [loading, setLoading] = useState(true);
   useEffect(() => {
     const token = localStorage.getItem('token');
     const role = localStorage.getItem('role');
-    
     if (token) {
       setUserRole(role);
     }
+    setLoading(false);
   }, []);
+   // If loading, don't render anything yet
+   if (loading) {
+    return <div>Loading...</div>;
+  }
   return (
     <Router>
       <div className="App">
