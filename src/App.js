@@ -14,6 +14,7 @@ import PrivateRoute from './util/PrivateRoute';
 import AdminPanel from './Pages/AdminPanel';
 import AllUsers from './Pages/AllUsers';
 import HostNames from './Pages/Hostnames';
+import Statuses from './Pages/Statuses';
 function App() {
   //const token = localStorage.getItem('token');
   //const userRole = localStorage.getItem('role');
@@ -57,6 +58,8 @@ function App() {
             <Route path="/all-users" element={<PrivateRoute><AllUsers /></PrivateRoute>} />
 
             <Route path="/manage-hostnames" element={userRole === 'ADMIN' ? <HostNames /> : <Navigate to="/login" />} />
+
+            <Route path="/manage-statuses" element={userRole === 'ADMIN' ? <Statuses/> : <Navigate to="/login" />} />
           </Routes>
         </main>
       </div>

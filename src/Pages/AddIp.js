@@ -15,11 +15,13 @@ export default function AddIp() {
   });
 
   const [hostNames, setHostNames] = useState([]);
+  const [statuses, setStatuses] = useState([]);
   const [error, setError] = useState(null); // State to handle error messages
   const [success, setSuccess] = useState(null); // State to handle success messages
   
   useEffect(() => {
     loadHostNames();
+    loadStatuses();
   }, []);
   
   const loadHostNames = async () => {
@@ -28,6 +30,14 @@ export default function AddIp() {
       setHostNames(result.data);
     } catch (error) {
       console.error("Error loading hostnames:", error);
+    }
+  };
+  const loadStatuses = async () => {
+    try {
+      const result = await axios.get('/statuses');
+      setStatuses(result.data);
+    } catch (error) {
+      console.error("Error loading statuses:", error);
     }
   };
 
@@ -39,6 +49,9 @@ export default function AddIp() {
 
   const handleHostNameChange = (e) => {
     setIpAddress({ ...ipAddress, hostName: e.target.value });
+  };
+  const handleStatusChange = (e) => {
+    setIpAddress({ ...ipAddress, status: e.target.value });
   };
 
   const validateForm = () => {
@@ -121,14 +134,19 @@ export default function AddIp() {
               <label htmlFor="status" className="form-label">
                 Status
               </label>
-              <input
-                type="text"
+              <select
                 className="form-control"
-                placeholder="Enter status"
                 name="status"
                 value={status}
-                onChange={onInputChange}
-              />
+                onChange={handleStatusChange}
+              >
+                <option value="">Select Status</option>
+                {statuses.map((status) => (
+                  <option key={status.id} value={status.name}>
+                    {status.name}
+                  </option>
+                ))}
+              </select>
             </div>
             <div className="mb-3">
               <label htmlFor="location" className="form-label">

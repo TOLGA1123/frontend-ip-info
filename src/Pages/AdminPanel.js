@@ -32,6 +32,11 @@ const AdminPanel = () => {
                                     Manage Hostnames
                                 </MDBBtn>
                             </Link>
+                            <Link to="/manage-statuses">
+                                <MDBBtn color="warning" className="ms-2">
+                                    Manage Statuses
+                                </MDBBtn>
+                            </Link>
                         <Link to="/all-users">
                                 <MDBBtn color="info" className="ms-2">
                                     View All Users
