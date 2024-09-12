@@ -1,5 +1,5 @@
 import axios from '../util/axios';
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 
 export default function AddIp() {
@@ -14,30 +14,49 @@ export default function AddIp() {
     operatingSystem: "",
   });
 
+  const [hostNames, setHostNames] = useState([]);
   const [error, setError] = useState(null); // State to handle error messages
   const [success, setSuccess] = useState(null); // State to handle success messages
+  
+  useEffect(() => {
+    loadHostNames();
+  }, []);
+  
+  const loadHostNames = async () => {
+    try {
+      const result = await axios.get('/hostnames');
+      setHostNames(result.data);
+    } catch (error) {
+      console.error("Error loading hostnames:", error);
+    }
+  };
 
   const { ip, hostName, status, location, relatedGroup, operatingSystem } = ipAddress;
 
   const onInputChange = (e) => {
     setIpAddress({ ...ipAddress, [e.target.name]: e.target.value });
   };
+
+  const handleHostNameChange = (e) => {
+    setIpAddress({ ...ipAddress, hostName: e.target.value });
+  };
+
   const validateForm = () => {
     if (!ipAddress.ip) {
       setError("IP Address is required");
       return false;
     }
-    // Add more validation if needed
     setError(null);
     return true;
   };
+
   const onSubmit = async (e) => {
     e.preventDefault();
     try {
       if (!validateForm()) return;
       const response = await axios.post('/info/ip', ipAddress);
       setSuccess("IP Address added successfully!");
-      setError(null); // Clear any previous errors
+      setError(null);
       navigate("/");
     } catch (error) {
       if (error.response && error.response.status === 409) {
@@ -45,7 +64,7 @@ export default function AddIp() {
       } else {
         setError("An error occurred while adding the IP address.");
       }
-      setSuccess(null); // Clear any previous success messages
+      setSuccess(null);
     }
   };
 
@@ -84,14 +103,19 @@ export default function AddIp() {
               <label htmlFor="hostName" className="form-label">
                 Host Name
               </label>
-              <input
-                type="text"
+              <select
                 className="form-control"
-                placeholder="Enter host name"
                 name="hostName"
                 value={hostName}
-                onChange={onInputChange}
-              />
+                onChange={handleHostNameChange}
+              >
+                <option value="">Select Host Name</option>
+                {hostNames.map((host) => (
+                  <option key={host.id} value={host.name}>
+                    {host.name}
+                  </option>
+                ))}
+              </select>
             </div>
             <div className="mb-3">
               <label htmlFor="status" className="form-label">

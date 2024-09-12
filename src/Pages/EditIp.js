@@ -1,10 +1,9 @@
 import axios from '../util/axios';
-import React, { useCallback ,useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { Link, useNavigate, useParams } from "react-router-dom";
 
 export default function EditIp() {
   let navigate = useNavigate();
-
   const { id } = useParams();
 
   const [ipAddress, setIpAddress] = useState({
@@ -16,29 +15,38 @@ export default function EditIp() {
     operatingSystem: "",
   });
 
-  const { ip, hostName, status, location, relatedGroup, operatingSystem } = ipAddress;
+  const [hostNames, setHostNames] = useState([]);
   const [errorMessage, setErrorMessage] = useState(null);
-  const onInputChange = (e) => {
-    setIpAddress({ ...ipAddress, [e.target.name]: e.target.value });
-  };
+
+  const { ip, hostName, status, location, relatedGroup, operatingSystem } = ipAddress;
 
   const loadIpAddress = useCallback(async () => {
     try {
-        const result = await axios.get(`/info/ip/${id}`);
-        setIpAddress(result.data);
-        setErrorMessage(null);
+      const result = await axios.get(`/info/ip/${id}`);
+      setIpAddress(result.data);
+      setErrorMessage(null);
     } catch (error) {
-        if (error.response && error.response.status === 404) {
-          setErrorMessage("IP Address with the id " + id + " not found");
-        } else {
-          console.error("Error loading IP address:", error);
-        }
+      if (error.response && error.response.status === 404) {
+        setErrorMessage("IP Address with the id " + id + " not found");
+      } else {
+        console.error("Error loading IP address:", error);
+      }
     }
-}, [id]);
+  }, [id]);
+
+  const loadHostNames = useCallback(async () => {
+    try {
+      const result = await axios.get('/hostnames'); // Adjust the endpoint as needed
+      setHostNames(result.data);
+    } catch (error) {
+      console.error("Error loading host names:", error);
+    }
+  }, []);
 
   useEffect(() => {
     loadIpAddress();
-  }, [loadIpAddress]);
+    loadHostNames();
+  }, [loadIpAddress, loadHostNames]);
 
   const validateForm = () => {
     if (!ipAddress.ip) {
@@ -49,6 +57,7 @@ export default function EditIp() {
     setErrorMessage(null);
     return true;
   };
+
   const onSubmit = async (e) => {
     e.preventDefault();
     try {
@@ -57,7 +66,7 @@ export default function EditIp() {
       navigate("/");
     } catch (error) {
       if (error.response && error.response.status === 409) {
-        setErrorMessage("IP address "+ ip +" already exists. Please use a different IP.");
+        setErrorMessage("IP address " + ip + " already exists. Please use a different IP.");
       } else {
         console.error("Error updating IP address:", error);
         setErrorMessage("An error occurred while updating the IP address.");
@@ -65,6 +74,9 @@ export default function EditIp() {
     }
   };
 
+  const onInputChange = (e) => {
+    setIpAddress({ ...ipAddress, [e.target.name]: e.target.value });
+  };
 
   return (
     <div className="container">
@@ -72,7 +84,6 @@ export default function EditIp() {
         <div className="col-md-6 offset-md-3 border rounded p-4 mt-2 shadow">
           {errorMessage ? (
             <>
-              {/* Display error message and Back to Home button */}
               <div className="text-center">
                 <h2 className="text-danger">{errorMessage}</h2>
                 <Link className="btn btn-outline-primary mt-3" to="/">
@@ -82,73 +93,77 @@ export default function EditIp() {
             </>
           ) : (
             <>
-              {/* Render form when no error */}
               <h2 className="text-center m-4">Edit IP</h2>
               <form onSubmit={(e) => onSubmit(e)}>
                 <div className="mb-3">
-                  <label htmlFor="Name" className="form-label">IP</label>
+                  <label htmlFor="ip" className="form-label">IP</label>
                   <input
                     type="text"
                     className="form-control"
                     placeholder="Enter IP address"
                     name="ip"
-                    value={ipAddress.ip}
-                    onChange={(e) => setIpAddress({ ...ipAddress, ip: e.target.value })}
+                    value={ip}
+                    onChange={onInputChange}
                   />
                 </div>
                 <div className="mb-3">
-                  <label htmlFor="Name" className="form-label">Sunucu Adı</label>
-                  <input
-                    type="text"
+                  <label htmlFor="hostName" className="form-label">Host Name</label>
+                  <select
                     className="form-control"
-                    placeholder="Enter host name"
                     name="hostName"
-                    value={ipAddress.hostName}
-                    onChange={(e) => setIpAddress({ ...ipAddress, hostName: e.target.value })}
-                  />
+                    value={hostName}
+                    onChange={onInputChange}
+                  >
+                    <option value="">Select Host Name</option>
+                    {hostNames.map((host) => (
+                      <option key={host.id} value={host.name}>
+                        {host.name}
+                      </option>
+                    ))}
+                  </select>
                 </div>
                 <div className="mb-3">
-                  <label htmlFor="Name" className="form-label">Durumu</label>
+                  <label htmlFor="status" className="form-label">Status</label>
                   <input
                     type="text"
                     className="form-control"
                     placeholder="Enter status"
                     name="status"
-                    value={ipAddress.status}
-                    onChange={(e) => setIpAddress({ ...ipAddress, status: e.target.value })}
+                    value={status}
+                    onChange={onInputChange}
                   />
                 </div>
                 <div className="mb-3">
-                  <label htmlFor="Name" className="form-label">Konumu</label>
+                  <label htmlFor="location" className="form-label">Location</label>
                   <input
                     type="text"
                     className="form-control"
                     placeholder="Enter location"
                     name="location"
-                    value={ipAddress.location}
-                    onChange={(e) => setIpAddress({ ...ipAddress, location: e.target.value })}
+                    value={location}
+                    onChange={onInputChange}
                   />
                 </div>
                 <div className="mb-3">
-                  <label htmlFor="Name" className="form-label">İlgilenen Grup</label>
+                  <label htmlFor="relatedGroup" className="form-label">Related Group</label>
                   <input
                     type="text"
                     className="form-control"
                     placeholder="Enter related group"
                     name="relatedGroup"
-                    value={ipAddress.relatedGroup}
-                    onChange={(e) => setIpAddress({ ...ipAddress, relatedGroup: e.target.value })}
+                    value={relatedGroup}
+                    onChange={onInputChange}
                   />
                 </div>
                 <div className="mb-3">
-                  <label htmlFor="Name" className="form-label">İşletim Sistemi</label>
+                  <label htmlFor="operatingSystem" className="form-label">Operating System</label>
                   <input
                     type="text"
                     className="form-control"
                     placeholder="Enter operating system"
                     name="operatingSystem"
-                    value={ipAddress.operatingSystem}
-                    onChange={(e) => setIpAddress({ ...ipAddress, operatingSystem: e.target.value })}
+                    value={operatingSystem}
+                    onChange={onInputChange}
                   />
                 </div>
                 <button type="submit" className="btn btn-outline-primary">

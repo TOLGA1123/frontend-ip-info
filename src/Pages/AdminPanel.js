@@ -27,12 +27,17 @@ const AdminPanel = () => {
                                 </MDBBtn>
                             </Link>
                         </MDBCardText>
-
+                            <Link to="/manage-hostnames">
+                                <MDBBtn color="success" className="ms-2">
+                                    Manage Hostnames
+                                </MDBBtn>
+                            </Link>
                         <Link to="/all-users">
                                 <MDBBtn color="info" className="ms-2">
                                     View All Users
                                 </MDBBtn>
                             </Link>
+                            
                     </MDBCardBody>
                 </MDBCard>
             </MDBCol>
